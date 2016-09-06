@@ -18,3 +18,6 @@ class sample:
         self.acids = _acids
 
         self.state = _state
+
+    def as_np_arrays(self):
+        return np.array(self.acids) , np.array([self.state])
