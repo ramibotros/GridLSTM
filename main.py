@@ -17,7 +17,7 @@ print "Test has %d unordered cases" % sum([sample.state for sample in test_sampl
 train_batch_generator = batcher.Batcher(train_samples, model_specs.BATCH_SIZE)
 test_batch = batcher.Batcher(test_samples, len(test_samples))
 
-network = graph.Network(hidden_layers_op=graph.Grid2LSTMLayers)
+network = graph.Network(hidden_layers_op=graph.FullyConnectedLayers)
 cost_op = network.cost
 train_op = network.train_once
 test_op = network.choices
