@@ -14,6 +14,7 @@ class Batcher:
     def __iter__(self):
         return self
 
+
     def next(self):
         _inputs = []
         _targets = []
@@ -24,3 +25,7 @@ class Batcher:
             _inputs.append(features)
             _targets.append(target)
         return _inputs, _targets
+
+
+    def __next__(self):
+        return self.next()

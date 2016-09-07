@@ -1,7 +1,7 @@
-import numpy as np
-#define training data elements
 from args import args
 
+
+#define training data elements
 class Acid:
     def __init__(self, _statistics, _type):
         #statistics: 20 numbers that describe some value related to each of the 20 possible letters of amino-acids

@@ -1,6 +1,5 @@
 import json
-from pprint import pprint
-import datum
+from data import datum
 
 
 def parsed_iterator(file_obj):

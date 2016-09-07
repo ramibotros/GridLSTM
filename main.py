@@ -15,8 +15,8 @@ test_samples = all_samples[int(len(all_samples) * 0.9):]
 print ("Train has %d unordered cases" % sum([sample.state for sample in train_samples]))
 print ("Test has %d unordered cases" % sum([sample.state for sample in test_samples]))
 
-train_batch_generator = batcher.Batcher(train_samples, args.batch_size)
-test_batch = batcher.Batcher(test_samples, args.batch_size)
+train_batch_generator = iter(batcher.Batcher(train_samples, args.batch_size))
+test_batch = iter(batcher.Batcher(test_samples, args.batch_size))
 
 hidden_layer_op = graph.FullyConnectedLayers if args.hidden_layer_type == "FC" else graph.Grid2LSTMLayers
 
