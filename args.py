@@ -22,4 +22,6 @@ parser.add_argument('--positive-multiplier', metavar="N", default=10, type=int,
                     help="Copy positive examples (unordered) N times in training data.")
 parser.add_argument('--positive-error-weight', metavar="N", default=10, type=int,
                     help="During training, exaggerate false-negative (saying ordered when actually unordered) loss by a factor of N.")
+parser.add_argument('--test-every', default=20, type=int, metavar="N",
+                    help="Measure test performance every Nth iteration.")
 args = parser.parse_args()

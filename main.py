@@ -40,7 +40,7 @@ with tf.Session() as sess:
         print("Training Cross Entropy = %f\tTrain Matthew's = %f" % (
             training_cross_entropy, train_mathews))
 
-        if current_iteration % 20 == 0 :
+        if current_iteration % args.test_every == 0 :
             test_batch_generator = batcher.TestBatcher(test_samples, args.batch_size)
             all_test_targets = []
             all_test_choices = []
