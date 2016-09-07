@@ -1,15 +1,30 @@
 from operator import mul
 
 import tensorflow as tf
-from tensorflow.contrib.grid_rnn import Grid2BasicLSTMCell
+from tensorflow.contrib.grid_rnn import Grid2BasicLSTMCell, Grid1BasicLSTMCell
 
 from args import args
 
 
 def Grid2LSTMLayers(input_op, arg_is_training=True):
-    first_dim = tf.slice(tf.shape(input_op), [0], [1])
+    lstm_cell = Grid2BasicLSTMCell(args.hidden_layer_size, tied=True)
+    multi_lstm_cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * args.hidden_layer_count)
 
-    lstm_cell = Grid2BasicLSTMCell(args.hidden_layer_size)
+    lstm_outputs, _ = tf.nn.dynamic_rnn(multi_lstm_cell, input_op, dtype=tf.float32)
+    # lstm_outputs shape = [batch_size, WINDOW_SIZE, 1]
+
+    last_output = tf.slice(lstm_outputs, [0, args.window_size - 1, 0], [-1, -1, -1])
+    return tf.squeeze(last_output, [1])
+
+
+def Grid1LSTMLayers(input_op, arg_is_training=True):
+    all_but_first_dims = input_op.get_shape().as_list()[1:]
+
+    product = 1
+    for item in all_but_first_dims:
+        product *= item
+
+    lstm_cell = Grid1BasicLSTMCell(args.hidden_layer_size)
     multi_lstm_cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * args.hidden_layer_count)
 
     lstm_outputs, _ = tf.nn.dynamic_rnn(multi_lstm_cell, input_op, dtype=tf.float32)
@@ -28,7 +43,10 @@ def FullyConnectedLayers(input_op, arg_is_training=True):
 
     cur_input = tf.reshape(input_op, [-1, product])
     for _ in range(args.hidden_layer_count):
-        cur_input = tf.contrib.layers.fully_connected(cur_input, args.hidden_layer_size)
+        cur_input = tf.contrib.layers.fully_connected(cur_input, args.hidden_layer_size,
+                                                      normalizer_fn=tf.contrib.layers.batch_norm,
+                                                      normalizer_params={"updates_collections": None,
+                                                                         "is_training": arg_is_training})
     return cur_input
 
 
