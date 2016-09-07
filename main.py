@@ -1,3 +1,4 @@
+from __future__ import print_function
 import tensorflow as tf
 from model import graph
 from data import json_reader, batcher, pos_multiplier
@@ -11,8 +12,8 @@ random.shuffle(all_samples)
 train_samples = list(pos_multiplier.repeat_positives(all_samples[:int(len(all_samples) * 0.9)], args.positive_multiplier))
 test_samples = all_samples[int(len(all_samples) * 0.9):]
 
-print "Train has %d unordered cases" % sum([sample.state for sample in train_samples])
-print "Test has %d unordered cases" % sum([sample.state for sample in test_samples])
+print ("Train has %d unordered cases" % sum([sample.state for sample in train_samples]))
+print ("Test has %d unordered cases" % sum([sample.state for sample in test_samples]))
 
 train_batch_generator = batcher.Batcher(train_samples, args.batch_size)
 test_batch = batcher.Batcher(test_samples, args.batch_size)
@@ -41,5 +42,5 @@ with tf.Session() as sess:
                                                                             network.data_targets: batch_targets,
                                                                             network.is_training_mode: False})
         test_mathew = matthews_corrcoef(batch_targets, test_choices)
-        print "Training Cross Entropy = %f\tTesting Cross Entropy = %f\tTrain Mathew = %f\tTest Mathew = %f" % (
-            training_cross_entropy, testing_cross_entropy, train_mathews, test_mathew)
+        print ("Training Cross Entropy = %f\tTesting Cross Entropy = %f\tTrain Mathew = %f\tTest Mathew = %f" % (
+            training_cross_entropy, testing_cross_entropy, train_mathews, test_mathew))

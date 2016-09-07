@@ -1,7 +1,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(description="Run GridLSTM or FC DNN on amino acid JSON data.")
-parser.add_argument('--data-file', default="data/json.txt", type=argparse.FileType('r'),
+parser.add_argument('--data-file', default="data/json_big.txt", type=argparse.FileType('r'),
                     help="JSON file with all the data. Data will be randomly split 90/10 into train/test data.")
 parser.add_argument('--hidden-layer-type', choices=["FC", "GridLSTM"], default="GridLSTM")
 parser.add_argument('--window-size', default=15, type=int,

@@ -5,7 +5,6 @@ from tensorflow.contrib.grid_rnn import Grid2BasicLSTMCell
 
 from args import args
 
-
 def Grid2LSTMLayers(input_op):
     first_dim = tf.slice(tf.shape(input_op), [0], [1])
 
