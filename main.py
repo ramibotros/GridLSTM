@@ -3,7 +3,7 @@ import tensorflow as tf
 from model import graph
 from data import json_reader, batcher, pos_multiplier
 import random
-from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import matthews_corrcoef, precision_score, recall_score
 from args import args
 
 all_samples = list(json_reader.parsed_iterator(args.data_file))
@@ -61,7 +61,9 @@ with tf.Session() as sess:
                 all_test_targets.extend(batch_targets)
                 all_test_choices.extend(test_choices)
             test_mathew = matthews_corrcoef(all_test_targets, all_test_choices)
-            print ("Test Matthew's = %f" % (test_mathew))
+            test_precision = precision_score(all_test_targets, all_test_choices)
+            test_recall = recall_score(all_test_targets, all_test_choices)
+            print ("Test Matthew's = %f\tPrecision = %f\tRecall = %f" % (test_mathew, test_precision, test_recall))
 
             save_path = saver.save(sess, args.save_path_basename, global_step=current_iteration)
             print("Model saved in file: %s" % save_path)

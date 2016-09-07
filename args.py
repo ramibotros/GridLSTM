@@ -20,7 +20,7 @@ parser.add_argument('--iterations', default=500, type=int,
                     help="Number of training iterations.")
 parser.add_argument('--positive-multiplier', metavar="N", default=1, type=int,
                     help="Copy positive examples (unordered) N times in training data.")
-parser.add_argument('--positive-error-weight', metavar="N", default=100, type=float,
+parser.add_argument('--positive-error-weight', metavar="N", default=10, type=float,
                     help="During training, exaggerate false-negative (saying ordered when actually unordered) loss by a factor of N.")
 parser.add_argument('--test-every', default=20, type=int, metavar="N",
                     help="Measure test performance every Nth iteration.")
