@@ -15,8 +15,8 @@ test_samples = all_samples[int(len(all_samples) * 0.9):]
 print ("Train has %d unordered cases" % sum([sample.state for sample in train_samples]))
 print ("Test has %d unordered cases" % sum([sample.state for sample in test_samples]))
 
-train_batch_generator = iter(batcher.Batcher(train_samples, args.batch_size))
-test_batch = iter(batcher.Batcher(test_samples, args.batch_size))
+train_batch_generator = batcher.Batcher(train_samples, args.batch_size)
+
 
 hidden_layer_op = graph.FullyConnectedLayers if args.hidden_layer_type == "FC" else graph.Grid2LSTMLayers
 
@@ -29,7 +29,7 @@ test_op = network.choices
 
 with tf.Session() as sess:
     sess.run(tf.initialize_all_variables())
-    for _ in range(args.iterations):
+    for current_iteration in range(args.iterations):
         batch_inputs, batch_targets = next(train_batch_generator)
         training_cross_entropy, train_choices, _ = sess.run([cost_op, test_op, train_op],
                                                             {network.data_input: batch_inputs,
@@ -37,10 +37,18 @@ with tf.Session() as sess:
                                                              network.is_training_mode: True})
         train_mathews = matthews_corrcoef(batch_targets, train_choices)
 
-        batch_inputs, batch_targets = next(test_batch)
-        testing_cross_entropy, test_choices = sess.run([cost_op, test_op], {network.data_input: batch_inputs,
-                                                                            network.data_targets: batch_targets,
-                                                                            network.is_training_mode: False})
-        test_mathew = matthews_corrcoef(batch_targets, test_choices)
-        print ("Training Cross Entropy = %f\tTesting Cross Entropy = %f\tTrain Mathew = %f\tTest Mathew = %f" % (
-            training_cross_entropy, testing_cross_entropy, train_mathews, test_mathew))
+        print("Training Cross Entropy = %f\tTrain Matthew's = %f" % (
+            training_cross_entropy, train_mathews))
+
+        if current_iteration % 20 == 0 :
+            test_batch_generator = batcher.TestBatcher(test_samples, args.batch_size)
+            all_test_targets = []
+            all_test_choices = []
+            for batch_inputs, batch_targets in test_batch_generator:
+                test_choices = sess.run(test_op, {network.data_input: batch_inputs,
+                                                                                    network.data_targets: batch_targets,
+                                                                                    network.is_training_mode: False})
+                all_test_targets.extend(batch_targets)
+                all_test_choices.extend(test_choices)
+            test_mathew = matthews_corrcoef(all_test_targets, all_test_choices)
+            print ("Test Matthew's = %f" % (test_mathew))

@@ -5,7 +5,8 @@ from tensorflow.contrib.grid_rnn import Grid2BasicLSTMCell
 
 from args import args
 
-def Grid2LSTMLayers(input_op):
+
+def Grid2LSTMLayers(input_op, arg_is_training=True):
     first_dim = tf.slice(tf.shape(input_op), [0], [1])
 
     lstm_cell = Grid2BasicLSTMCell(args.hidden_layer_size)
@@ -18,7 +19,7 @@ def Grid2LSTMLayers(input_op):
     return tf.squeeze(last_output, [1])
 
 
-def FullyConnectedLayers(input_op):
+def FullyConnectedLayers(input_op, arg_is_training=True):
     all_but_first_dims = input_op.get_shape().as_list()[1:]
 
     product = 1
@@ -42,7 +43,7 @@ class Network:
         BN_inputs = tf.contrib.layers.batch_norm(self.data_input, updates_collections=None,
                                                  is_training=self.is_training_mode)
 
-        hidden_layers_output = hidden_layers_op(BN_inputs)
+        hidden_layers_output = hidden_layers_op(BN_inputs, arg_is_training=self.is_training_mode)
 
         # Softmax:
         prediction = tf.contrib.layers.fully_connected(hidden_layers_output, 2)

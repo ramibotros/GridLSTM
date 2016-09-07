@@ -29,3 +29,20 @@ class Batcher:
 
     def __next__(self):
         return self.next()
+
+def TestBatcher(iterable, batch_size):
+    data = list(iterable)
+    while len(data) < batch_size:
+        data = data + data
+
+    _inputs = []
+    _targets = []
+    for sample in data:
+        features, target = sample.get_acids_2D_array(), sample.state
+        _inputs.append(features)
+        _targets.append(target)
+
+        if len(_targets)==batch_size:
+            yield _inputs, _targets
+            _inputs = []
+            _targets = []
