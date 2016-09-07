@@ -20,7 +20,12 @@ def Grid2LSTMLayers(input_op):
 
 def FullyConnectedLayers(input_op):
     all_but_first_dims = input_op.get_shape().as_list()[1:]
-    cur_input = tf.reshape(input_op, [-1, reduce(mul, all_but_first_dims, 1)])
+
+    product = 1
+    for item in all_but_first_dims:
+        product *= item
+
+    cur_input = tf.reshape(input_op, [-1, product])
     for _ in range(args.hidden_layer_count):
         cur_input = tf.contrib.layers.fully_connected(cur_input, args.hidden_layer_size)
     return cur_input
