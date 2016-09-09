@@ -4,8 +4,10 @@ from args_parser import options
 from data import json_reader, batcher, splitter
 from model import graph, runners
 
-all_samples = list(json_reader.parsed_iterator(options.data_file))
-train_samples, valid_samples, test_samples = splitter.split_data(all_samples, 0.8, 0.1, 0.1, options.positive_multiplier)
+train_samples = list(json_reader.parsed_iterator(options.train_file))
+valid_samples = list(json_reader.parsed_iterator(options.valid_file))
+test_samples = list(json_reader.parsed_iterator(options.test_file))
+#train_samples, valid_samples, test_samples = splitter.split_data(all_samples, 0.8, 0.1, 0.1, options.positive_multiplier)
 
 print("Train has %d unordered cases out of total %d" % (
     sum([sample.state for sample in train_samples]), len(train_samples)))
