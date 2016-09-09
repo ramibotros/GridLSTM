@@ -23,7 +23,10 @@ parser.add_argument('--positive-multiplier', metavar="N", default=1, type=int,
 parser.add_argument('--positive-error-weight', metavar="N", default=10, type=float,
                     help="During training, exaggerate false-negative (saying ordered when actually unordered) loss by a factor of N.")
 parser.add_argument('--test-every', default=20, type=int, metavar="N",
-                    help="Measure test performance every Nth iteration.")
+                    help="Measure validation and test performance every Nth iteration.")
+parser.add_argument('--early-stop-after', default=100, type=int, metavar="N",
+                    help="Do early stopping if the last N validation performance measures never improved.")
 parser.add_argument('--save-path-basename', type=str, default="/tmp/model.ckpt", help="Backup model to path every time a test is run (See --test-every).")
 parser.add_argument('--load-path', type=str, help="Backup model to path at the end.")
-args = parser.parse_args()
+options = parser.parse_args()
+
